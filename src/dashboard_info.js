@@ -26,6 +26,12 @@ netdataDashboard.menu = {
         '(the resources accounting used by containers).'
     },
 
+    'systemd': {
+        title: 'Systemd Units',
+        icon: '<i class="fas fa-cogs"></i>',
+        info: 'State and resource usage of individual systemd units monitored by Netdata.'
+    },
+
     'ap': {
         title: 'Access Points',
         icon: '<i class="fas fa-wifi"></i>',

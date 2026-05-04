@@ -1056,6 +1056,10 @@ function enrichChartData(chart) {
             }
             break;
 
+        case 'systemd':
+            chart.menu = 'systemd';
+            break;
+
         case 'isc':
             chart.menu = chart.type;
             if (parts.length > 2 && parts[1] === 'dhcpd') {
