@@ -1006,9 +1006,14 @@ function enrichChartData(chart) {
     switch (tmp) {
         case 'ap':
         case 'net':
-        case 'disk':
         case 'powersupply':
             chart.menu = tmp;
+            break;
+
+        case 'disk':
+            chart.menu = tmp;
+            var diskDevice = chart.id.slice(chart.type.length + 1);
+            if (diskDevice) chart.submenu = diskDevice;
             break;
 
         case 'apache':
