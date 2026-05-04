@@ -1058,6 +1058,9 @@ function enrichChartData(chart) {
 
         case 'systemd':
             chart.menu = 'systemd';
+            if (parts.length > 1) {
+                chart.submenu = parts.slice(1).join('_');
+            }
             break;
 
         case 'isc':
@@ -1141,7 +1144,7 @@ function enrichChartData(chart) {
             break;
     }
 
-    chart.submenu = chart.family;
+    if (typeof chart.submenu === 'undefined') chart.submenu = chart.family;
 }
 
 // ----------------------------------------------------------------------------
