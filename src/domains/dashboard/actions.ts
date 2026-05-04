@@ -12,16 +12,3 @@ export const startSnapshotModeAction = createAction<startSnapshotModeAction>(
 )
 
 export const stopSnapshotModeAction = createAction(`${storeKey}/stopSnapshotModeAction`)
-
-export interface ShowSignInModalAction { signInLinkHref: string }
-export const showSignInModalAction = createAction<ShowSignInModalAction>(
-  `${storeKey}/showSignInModal`,
-)
-
-export const explicitlySignInAction = createAction(`${storeKey}/explicitlySignIn`)
-
-export interface IsSignedInAction { isSignedIn: boolean }
-export const isSignedInAction = createAction<IsSignedInAction>(`${storeKey}/isSignedInAction`)
-
-export interface SetOfflineAction { offline: boolean }
-export const setOfflineAction = createAction<SetOfflineAction>(`${storeKey}/setOfflineAction`)

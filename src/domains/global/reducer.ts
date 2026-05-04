@@ -36,7 +36,6 @@ import {
   setGlobalPauseAction,
   resetGlobalPauseAction,
   setUTCOffset,
-  setUserNodeAccess,
 } from "./actions"
 import {
   Options,
@@ -44,8 +43,6 @@ import {
   getOptionsMergedWithLocalStorage,
   clearLocalStorage,
 } from "./options"
-import { CLOUD_BASE_URL_DISABLED } from "./constants"
-import { UserNodeAccessMessage } from "./types"
 
 interface CommonMinMax {
   [commonKey: string]: {
@@ -93,15 +90,10 @@ export type StateT = {
   spacePanelTransitionEndIsActive: boolean
 
   registry: {
-    cloudBaseURL: string | null
     hasFetchedHello: boolean
     isHelloCallError: boolean | null
     hasFetchedInfo: boolean
     hostname: string
-    isCloudEnabled: boolean | null
-    isCloudAvailable: boolean | null
-    isAgentClaimed: boolean | null
-    isACLKAvailable: boolean | null
     hasStartedInfo: boolean
     fullInfoPayload: InfoPayload | null
     isFetchingHello: boolean
@@ -126,7 +118,6 @@ export type StateT = {
 
   snapshot: Snapshot | null
   options: Options
-  userNodeAccess: UserNodeAccessMessage
 }
 
 export const initialDefaultAfter = isMainJs ? getInitialAfterFromWindow() : -900
@@ -148,15 +139,10 @@ export const initialState: StateT = {
   spacePanelTransitionEndIsActive: false,
 
   registry: {
-    cloudBaseURL: null,
     hasFetchedInfo: false,
     hasFetchedHello: false,
     isHelloCallError: null,
     hostname: "unknown",
-    isCloudEnabled: null,
-    isCloudAvailable: null,
-    isAgentClaimed: null,
-    isACLKAvailable: null,
     hasStartedInfo: false,
     isFetchingHello: false,
     fullInfoPayload: null,
@@ -181,7 +167,6 @@ export const initialState: StateT = {
   },
 
   options: optionsMergedWithLocalStorage,
-  userNodeAccess: null,
 }
 
 export const globalReducer = createReducer<StateT>({}, initialState)
@@ -414,11 +399,10 @@ globalReducer.on(fetchHelloAction.request, state => ({
   },
 }))
 
-globalReducer.on(fetchHelloAction.success, (state, { cloudBaseURL, hostname, machineGuid }) => ({
+globalReducer.on(fetchHelloAction.success, (state, { hostname, machineGuid }) => ({
   ...state,
   registry: {
     ...state.registry,
-    cloudBaseURL,
     isFetchingHello: false,
     hasFetchedHello: true,
     hostname,
@@ -429,7 +413,6 @@ globalReducer.on(fetchHelloAction.failure, state => ({
   ...state,
   registry: {
     ...state.registry,
-    cloudBaseURL: CLOUD_BASE_URL_DISABLED,
     isFetchingHello: false,
     isHelloCallError: true,
   },
@@ -457,33 +440,20 @@ globalReducer.on(fetchInfoAction, state => ({
     hasStartedInfo: true,
   },
 }))
-globalReducer.on(
-  fetchInfoAction.success,
-  (
-    state,
-    { isCloudAvailable, isCloudEnabled, isAgentClaimed, isACLKAvailable, fullInfoPayload }
-  ) => ({
-    ...state,
-    registry: {
-      ...state.registry,
-      hasFetchedInfo: true,
-      isCloudAvailable,
-      isCloudEnabled,
-      isAgentClaimed,
-      isACLKAvailable,
-      fullInfoPayload,
-    },
-  })
-)
+globalReducer.on(fetchInfoAction.success, (state, { fullInfoPayload }) => ({
+  ...state,
+  registry: {
+    ...state.registry,
+    hasFetchedInfo: true,
+    fullInfoPayload,
+  },
+}))
 
 globalReducer.on(fetchInfoAction.failure, state => ({
   ...state,
   registry: {
     ...state.registry,
-    isCloudAvailable: false,
-    isCloudEnabled: false,
-    isAgentClaimed: false,
-    isACLKAvailable: false,
+    hasFetchedInfo: true,
   },
 }))
 
@@ -599,4 +569,3 @@ globalReducer.on(chartsMetadataRequestSuccess, (state, { data }) => ({
   },
 }))
 
-globalReducer.on(setUserNodeAccess, (state, { message }) => ({ ...state, userNodeAccess: message }))

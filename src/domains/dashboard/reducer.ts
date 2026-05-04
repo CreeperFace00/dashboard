@@ -2,22 +2,18 @@ import { createReducer } from "redux-act"
 
 import { ChartsMetadata } from "domains/global/types"
 
-import { startSnapshotModeAction, stopSnapshotModeAction, isSignedInAction, setOfflineAction } from "./actions"
+import { startSnapshotModeAction, stopSnapshotModeAction } from "./actions"
 
 export type StateT = {
   isSnapshotMode: boolean
   snapshotCharts: ChartsMetadata | null
   snapshotDataPoints: number | null
-  isSignedIn: boolean
-  offline: boolean
 }
 
 export const initialState: StateT = {
   isSnapshotMode: false,
   snapshotCharts: null,
   snapshotDataPoints: null,
-  isSignedIn: false,
-  offline: false
 }
 
 export const dashboardReducer = createReducer<StateT>({}, initialState)
@@ -36,12 +32,3 @@ dashboardReducer.on(stopSnapshotModeAction, (state) => ({
   snapshotDataPoints: initialState.snapshotDataPoints,
 }))
 
-dashboardReducer.on(isSignedInAction, (state, { isSignedIn }) => ({
-  ...state,
-  isSignedIn
-}))
-
-dashboardReducer.on(setOfflineAction, (state, { offline }) => ({
-  ...state,
-  offline
-}))

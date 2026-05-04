@@ -123,10 +123,6 @@ export interface FetchInfoPayload {
   poll?: boolean
 }
 export interface FetchInfoSuccessPayload {
-  isCloudAvailable: boolean
-  isCloudEnabled: boolean
-  isAgentClaimed: boolean
-  isACLKAvailable: boolean
   fullInfoPayload: InfoPayload
 }
 export const fetchInfoAction = createRequestAction<

@@ -25,7 +25,7 @@ import "styles/fonts.css"
 import { loadCss } from "utils/css-loader"
 import { useDateTime } from "utils/date-time"
 import { useSelector } from "store/redux-separate-context"
-import { selectCloudBaseUrl, selectHasFetchedInfo, selectTheme } from "domains/global/selectors"
+import { selectHasFetchedInfo, selectTheme } from "domains/global/selectors"
 import { Portals } from "domains/chart/components/portals"
 import { useChartsMetadata } from "domains/dashboard/hooks/use-charts-metadata"
 import { PrintModal } from "domains/dashboard/components/print-modal"
@@ -46,19 +46,12 @@ import { serverStatic } from "utils/server-detection"
 import { mapTheme } from "utils/map-theme"
 import { netdataCallback, updateLocaleFunctions } from "./main"
 
-import { MigrationManager } from "@/src/domains/dashboard/components/migration-manager"
 import { isDemo } from "./utils/is-demo"
-import { Box } from "@netdata/netdata-ui"
-import { selectIsCloudEnabled } from "domains/global/selectors"
-
-const FakeMargin = Box
 
 // support legacy code
 window.Ps = Ps
 
 const App: React.FC = () => {
-  const cloudEnabled = useSelector(selectIsCloudEnabled)
-
   const store = useStore()
   useEffect(() => {
     // todo
@@ -111,7 +104,6 @@ const App: React.FC = () => {
   }, [])
 
   const chartsMetadata = useChartsMetadata()
-  const cloudBaseURL = useSelector(selectCloudBaseUrl)
 
   // @ts-ignore
   window.NETDATA.parseDom = parseDom.current
@@ -128,10 +120,9 @@ const App: React.FC = () => {
         <NotificationsContainer />
       )}
       <></>
-      {chartsMetadata && cloudBaseURL && hasFetchedInfo && haveDOMReadyForParsing && (
+      {chartsMetadata && hasFetchedInfo && haveDOMReadyForParsing && (
         <>
           <Layout printMode={isPrintMode}>
-            {isDemo ? null : <MigrationManager />}
             {hasFetchDependencies && (
               <>
                 <Portals key={refreshHelper} />
@@ -142,7 +133,6 @@ const App: React.FC = () => {
               </>
             )}
           </Layout>
-          {cloudEnabled && <FakeMargin height={15} />}
         </>
       )}
     </ThemeProvider>

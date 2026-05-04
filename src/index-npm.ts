@@ -4,10 +4,8 @@ import Ps from "perfect-scrollbar"
 
 import "types/global"
 
-import "./cloud-settings"
-
 // those paths are a result of multi-purpose of this repository. 1) static custom dashboards
-// 2) main Dashboard, 3) cloud npm package
+// 2) main Dashboard, 3) npm package
 import "../dashboard-react"
 // todo support themes
 import "./styles/bootstrap-3.3.7.css"

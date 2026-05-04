@@ -1,12 +1,6 @@
 /* eslint-disable camelcase */
 
 import { ChartMetadata } from "domains/chart/chart-types"
-import {
-  UserStatus,
-  NodeClaimedStatus,
-  UserNodeAccess,
-  NodeLiveness,
-} from "domains/dashboard/components/migration-modal"
 
 export type AlarmStatus =
   | "WARNING"
@@ -16,7 +10,6 @@ export type AlarmStatus =
   | "UNINITIALIZED"
   | "CLEAR"
   | "CRITICAL"
-// it's possible that this interface is too narrow
 export interface AlarmLog {
   hostname: string
   unique_id: number
@@ -126,11 +119,4 @@ export interface Snapshot {
   netdata_version: string
   snapshot_version: number
   url: string
-}
-
-export type UserNodeAccessMessage = {
-  userStatus: UserStatus
-  nodeClaimedStatus: NodeClaimedStatus
-  nodeLiveness: NodeLiveness
-  userNodeAccess: UserNodeAccess
 }

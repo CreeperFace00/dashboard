@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect } from "react"
+import React, { useCallback } from "react"
 import styled from "styled-components"
-import { createSelector } from "reselect"
 import { Flex } from "@netdata/netdata-ui"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocalStorage } from "react-use"
@@ -13,16 +12,9 @@ const Wrapper = styled(Flex).attrs({ height: "100vh", zIndex: 10 })`
   pointer-events: all;
 `
 
-const isSignedInSelector = createSelector(
-  ({ dashboard }) => dashboard,
-  ({ isSignedIn }) => isSignedIn
-)
-
 const Sidebar = () => {
   const [lsValue, setLsValue] = useLocalStorage("space-panel-state")
   const isOpen = useSelector(selectSpacePanelIsActive)
-  const signedIn = useSelector(isSignedInSelector)
-
   const dispatch = useDispatch()
 
   const toggle = useCallback(() => {
@@ -31,15 +23,10 @@ const Sidebar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
-  useEffect(() => {
-    dispatch(setSpacePanelStatusAction({ isActive: lsValue ? signedIn : false }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signedIn])
-
   return (
     <Wrapper>
-      <Spaces isOpen={isOpen} toggle={toggle} isSignedIn={signedIn} />
-      <Space isOpen={isOpen} toggle={toggle} offline={true} />
+      <Spaces isOpen={isOpen} toggle={toggle} />
+      <Space isOpen={isOpen} toggle={toggle} />
     </Wrapper>
   )
 }

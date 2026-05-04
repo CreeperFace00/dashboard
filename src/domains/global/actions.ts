@@ -3,7 +3,7 @@ import { createAction } from "redux-act"
 import { createRequestAction } from "utils/createRequestAction"
 import { RegistryMachine } from "domains/global/sagas"
 import { storeKey } from "./constants"
-import { ActiveAlarms, ChartsMetadata, Snapshot, Alarm, UserNodeAccessMessage } from "./types"
+import { ActiveAlarms, ChartsMetadata, Snapshot, Alarm } from "./types"
 
 interface RequestCommonColors {
   chartContext: string
@@ -85,7 +85,6 @@ export interface FetchHelloPayload {
 export interface HelloResponse {
   action: "hello"
   anonymous_statistics: boolean
-  cloud_base_url: string
   hostname: string
   machine_guid: string
   registry: string
@@ -95,7 +94,7 @@ export interface HelloResponse {
 
 export const fetchHelloAction = createRequestAction<
   FetchHelloPayload,
-  { cloudBaseURL: string; hostname: string; isCloudEnabled: boolean; machineGuid: string }
+  { hostname: string; machineGuid: string }
 >(`${storeKey}/fetchHelloAction`)
 
 interface UpdatePersonUrlsAction {
@@ -168,8 +167,4 @@ export const resetGlobalPauseAction = createAction<{ forcePlay?: boolean }>(
 )
 export const setUTCOffset = createAction<{ utcOffset?: number | string }>(
   `${storeKey}/setUTCOffset`
-)
-
-export const setUserNodeAccess = createAction<{ message: UserNodeAccessMessage }>(
-  `${storeKey}/setUserNodeAccess`
 )

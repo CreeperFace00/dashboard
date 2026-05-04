@@ -2,8 +2,6 @@ import { prop, path } from "ramda"
 import { createSelector } from "reselect"
 
 import { AppStateT } from "store/app-state"
-import { utmUrlSuffix } from "utils/utils"
-import { alwaysEndWithSlash } from "utils/server-detection"
 
 import { GetKeyArguments, getKeyForCommonColorsState } from "./reducer"
 import { storeKey } from "./constants"
@@ -58,36 +56,12 @@ export const selectSnapshot = createSelector(
 
 export const selectRegistry = createSelector(selectGlobal, prop("registry"))
 
-export const selectCloudBaseUrl = createSelector(selectRegistry, prop("cloudBaseURL"))
-
-export const utmParametersToString = (utmParameters = {}) =>
-  Object.keys(utmParameters).reduce((acc, key) => (acc += `&utm_${key}=${utmParameters[key]}`), "")
-
-export const selectSignInUrl = utmParameters =>
-  createSelector(selectRegistry, selectCloudBaseUrl, (registry, cloudBaseURL) => {
-    const name = encodeURIComponent(registry.hostname)
-    const origin = encodeURIComponent(
-      alwaysEndWithSlash(window.location.origin + window.location.pathname)
-    )
-    // not adding redirect_url - it needs to always be based on newest href
-    // eslint-disable-next-line max-len
-    return `${cloudBaseURL}/sign-in?id=${
-      registry.machineGuid
-    }&name=${name}&origin=${origin}${utmUrlSuffix}${utmParametersToString(utmParameters)}`
-  })
-
 export const selectIsFetchingHello = createSelector(selectRegistry, prop("isFetchingHello"))
 export const selectIsUsingGlobalRegistry = createSelector(
   selectRegistry,
   ({ registryServer }) => registryServer && (registryServer !== NETDATA_REGISTRY_SERVER),
 )
 
-// currently cloud-base-url is taken from registry?action=hello call, which returns error
-// if Agent+browser are configured to respect do-not-track
-export const selectIsCloudEnabled = createSelector(
-  selectRegistry,
-  (registry) => registry.isCloudEnabled && !registry.isHelloCallError,
-)
 export const selectHasFetchedInfo = createSelector(selectRegistry, prop("hasFetchedInfo"))
 export const selectFullInfoPayload = createSelector(selectRegistry, prop("fullInfoPayload"))
 
@@ -150,5 +124,3 @@ export const selectChartMetadataFromChartsCall = createSelector(
   (_: unknown, { chartId }: { chartId: string, id: string }) => chartId,
   (allMetadata, chartId) => allMetadata?.charts[chartId],
 )
-
-export const selectUserNodeAccess = createSelector(selectGlobal, global => global.userNodeAccess)

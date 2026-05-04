@@ -2,12 +2,9 @@ import React, { useCallback } from "react"
 import { useSelector } from "react-redux"
 import { createSelector } from "reselect"
 import { Flex, Text, TextSmall, Collapsible, Button } from "@netdata/netdata-ui"
-import { selectIsUsingGlobalRegistry, selectIsCloudEnabled } from "domains/global/selectors"
+import { selectIsUsingGlobalRegistry } from "domains/global/selectors"
 import getNodes from "./nodes"
 import ReplicatedNodes from "./replicatedNodes"
-import SpacePanelIframe from "./spacePanelIframe"
-import SignInPrompt from "./prompts/signIn"
-import OfflinePrompt from "./prompts/offline"
 import VisitedNodes from "./visitedNodes"
 
 const replicatedNodesSelector = createSelector(
@@ -21,17 +18,10 @@ const visitedNodesSelector = createSelector(
   registry => registry.registryMachinesArray || []
 )
 
-const isSignedInSelector = createSelector(
-  ({ dashboard }) => dashboard,
-  ({ isSignedIn, offline }) => ({ isSignedIn, offline })
-)
-
 const Space = ({ isOpen, toggle }) => {
   const { parentNode = {}, replicatedNodes = [] } = useSelector(replicatedNodesSelector)
   const visitedNodes = useSelector(visitedNodesSelector)
   const globalRegistry = useSelector(selectIsUsingGlobalRegistry)
-  const { isSignedIn, offline } = useSelector(isSignedInSelector)
-  const cloudEnabled = useSelector(selectIsCloudEnabled)
 
   const switchIdentity = useCallback(() => window.switchRegistryModalHandler(), [])
 
@@ -56,20 +46,13 @@ const Space = ({ isOpen, toggle }) => {
               onClick={toggle}
             />
           </Flex>
-          {!isSignedIn && (
-            <>
-              {!!replicatedNodes.length && (
-                <ReplicatedNodes parentNode={parentNode} replicatedNodes={replicatedNodes} />
-              )}
-              {!!visitedNodes.length && (
-                <Text strong color="border">
-                  <VisitedNodes machinesArray={visitedNodes} />
-                </Text>
-              )}
-            </>
+          {!!replicatedNodes.length && (
+            <ReplicatedNodes parentNode={parentNode} replicatedNodes={replicatedNodes} />
           )}
-          {isSignedIn && (
-            <SpacePanelIframe parentNode={parentNode} replicatedNodes={replicatedNodes} />
+          {!!visitedNodes.length && (
+            <Text strong color="border">
+              <VisitedNodes machinesArray={visitedNodes} />
+            </Text>
           )}
         </Flex>
         {globalRegistry && (
@@ -77,8 +60,6 @@ const Space = ({ isOpen, toggle }) => {
             <TextSmall onClick={switchIdentity}>Switch Identity</TextSmall>
           </Flex>
         )}
-        {!isSignedIn && cloudEnabled && <SignInPrompt />}
-        {offline && cloudEnabled && <OfflinePrompt />}
       </Flex>
     </Collapsible>
   )

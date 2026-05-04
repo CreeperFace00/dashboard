@@ -28,7 +28,6 @@ import {
 import { seconds4human } from './domains/chart/utils/seconds4human';
 import { zeropad } from './utils/units-conversion';
 import {
-    explicitlySignInAction,
     startSnapshotModeAction,
     stopSnapshotModeAction,
 } from './domains/dashboard/actions';
@@ -4048,12 +4047,3 @@ window.selected_server_timezone = function (timezone, status) {
 
 export var netdataCallback = initializeDynamicDashboard;
 
-window.showSignInModal = function() {
-    document.getElementById("sim-registry").innerHTML = getFromRegistry("registryServer");
-    $("#signInModal").modal("show");
-}
-
-window.explicitlySignIn = () => {
-    $("#signInModal").modal("hide");
-    reduxStore.dispatch(explicitlySignInAction())
-};

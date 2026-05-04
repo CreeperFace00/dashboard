@@ -5,7 +5,6 @@ import {
   select,
   spawn,
   take,
-  delay,
 } from "redux-saga/effects"
 import { channel } from "redux-saga"
 import { Action } from "redux-act"
@@ -15,14 +14,10 @@ import { alwaysEndWithSlash, serverDefault } from "utils/server-detection"
 import { getFetchStream } from "utils/netdata-sdk"
 import { isMainJs } from "utils/env"
 import { fillMissingData, transformResults } from "utils/fill-missing-data"
-import {
-  showCloudInstallationProblemNotification, showCloudConnectionProblemNotification,
-} from "components/notifications"
 import { selectGlobalPanAndZoom, selectSnapshot, selectRegistry } from "domains/global/selectors"
 import { StateT as GlobalStateT } from "domains/global/reducer"
 import { stopSnapshotModeAction } from "domains/dashboard/actions"
 import { isPrintMode } from "domains/dashboard/utils/parse-url"
-import { INFO_POLLING_FREQUENCY } from "domains/global/constants"
 
 import {
   fetchDataAction,
@@ -341,51 +336,12 @@ function* fetchChartSaga({ payload }: Action<FetchChartPayload>) {
 }
 
 function* fetchInfoSaga({ payload }: Action<FetchInfoPayload>) {
-  const { poll } = payload
-  let isCloudEnabled = false
-  let isAgentClaimed = false
-  let isCloudAvailable = false
-  let isACLKAvailable = false
-
   try {
-    const registry: GlobalStateT["registry"] = yield select(selectRegistry)
-    const wasCloudAvailable = registry?.isCloudAvailable
-    const wasACLKAvailable = registry?.isACLKAvailable
-
     const { data } = yield call(axiosInstance.get, `${serverDefault}/api/v1/info`)
-    isCloudAvailable = data?.["cloud-available"] || false
-    isCloudEnabled = data?.["cloud-enabled"] || false
-    isAgentClaimed = data?.["agent-claimed"] || false
-    isACLKAvailable = data?.["aclk-available"] || false
-
-    yield put(fetchInfoAction.success({
-      isCloudAvailable, isCloudEnabled, isAgentClaimed, isACLKAvailable, fullInfoPayload: data,
-    }))
-
-    if (isCloudEnabled && (wasCloudAvailable === null) && !isCloudAvailable) {
-      // show only once per session
-      showCloudInstallationProblemNotification()
-    }
-    if (isCloudAvailable && isAgentClaimed && (wasACLKAvailable !== false) && !isACLKAvailable) {
-      // show at session-init and if we see a change of isACLKAvailable from true to false
-      showCloudConnectionProblemNotification()
-    }
-    // TODO: No success notification spec`ed?
-    // else if (!wasACLKAvailable && isACLKAvailable) {
-    //   toast.success("Connected to the Cloud!", {
-    //     position: "bottom-right",
-    //     type: toast.TYPE.SUCCESS,
-    //     autoClose: NOTIFICATIONS_TIMEOUT,
-    //   })
-    // }
+    yield put(fetchInfoAction.success({ fullInfoPayload: data }))
   } catch (e) {
     console.warn("fetch agent info failure") // eslint-disable-line no-console
     yield put(fetchInfoAction.failure())
-  }
-
-  if (poll && isCloudEnabled && isAgentClaimed) {
-    yield delay(INFO_POLLING_FREQUENCY)
-    yield put(fetchInfoAction({ poll: true }))
   }
 }
 
