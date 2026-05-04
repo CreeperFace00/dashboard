@@ -6,7 +6,6 @@ import Options from "./options"
 import Version from "./version"
 import GlobalControls from "./globalControls"
 import Alarms from "./alarms"
-import News from "./news"
 import Timezone from "./timezone"
 
 const Wrapper = styled(Flex).attrs({
@@ -28,7 +27,6 @@ const Header = () => (
     </Flex>
     <Flex justifyContent="end" alignItems="center" gap={3}>
       <Version />
-      <News />
       <Options />
       <Timezone />
       <GlobalControls />
