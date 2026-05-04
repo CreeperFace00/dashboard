@@ -24,6 +24,9 @@ The following Netdata Cloud features have been removed from the original source:
 - `cloud-settings.ts` (set cloud-specific window globals)
 - All cloud-gating conditionals throughout the component tree
 
+**Additional improvements:**
+- Systemd unit charts (from the go.d systemd-units plugin) are consolidated into a single "Systemd Units" sidebar category, grouped by unit name, instead of flooding the sidebar with one entry per unit
+
 **Build fixes for modern environments:**
 - Added `@netdata/react-filter-box` stub (the original private package was removed from npm)
 - Replaced `node-sass` (incompatible with Node.js 18+) with `sass`
@@ -36,14 +39,14 @@ The core monitoring dashboard — charts, alarms, the registry, pan/zoom, themin
 
 ## Installing on a Netdata Agent
 
-Netdata's built-in web server serves static files from its web root (typically `/usr/share/netdata/web/`). The v1 dashboard's `index.html` is loaded from the `v1/` subdirectory, while the JavaScript and CSS chunks are served from `static/` in the web root.
+Netdata's built-in web server serves static files from its web root (typically `/usr/share/netdata/web/`). The v1 dashboard lives in the `v1/` subdirectory, while several supporting files are served from the web root itself.
 
 ### 1. Build the dashboard
 
 Clone this repo and build:
 
 ```bash
-git clone <this-repo> netdata-dashboard
+git clone https://github.com/CreeperFace00/dashboard netdata-dashboard
 cd netdata-dashboard
 npm install --legacy-peer-deps
 rm -rf node_modules/node-sass   # incompatible with Node.js 18+
@@ -55,14 +58,34 @@ NODE_OPTIONS=--openssl-legacy-provider npm run build
 
 ### 2. Deploy to the agent
 
-```bash
-# Copy the new index.html into the v1 directory
-sudo cp build/index.html /usr/share/netdata/web/v1/index.html
+The build produces several output directories. Each goes to a specific location in the Netdata web root:
 
-# Copy the static JS/CSS chunks into the web root
-# (Content-hashed filenames mean this won't break any other deployed version)
-sudo cp -r build/static/* /usr/share/netdata/web/static/
+```bash
+WEB=/usr/share/netdata/web   # adjust if your install path differs
+
+# Create the v1 directory if it doesn't exist (required on fresh Netdata v2 installs)
+sudo mkdir -p $WEB/v1
+
+# The main dashboard page
+sudo cp build/index.html $WEB/v1/index.html
+
+# React JS/CSS/font chunks (referenced by index.html via relative ./static/ paths)
+sudo cp -r build/static $WEB/v1/static
+
+# Legacy JS bootstrap file — sets up the window.NETDATA global (served at /dashboard-react.js)
+sudo cp build/dashboard-react.js $WEB/dashboard-react.js
+
+# Dashboard metadata — fetched at runtime by the app (served at /dashboard_info.js)
+sudo cp build/dashboard_info.js $WEB/dashboard_info.js
+
+# Bootstrap CSS themes — fetched at runtime by the app (served at /css/*)
+sudo cp -r build/css $WEB/css
+
+# Bootstrap icon fonts — referenced by the CSS above (served at /fonts/*)
+sudo cp -r build/fonts $WEB/fonts
 ```
+
+> **Note on existing Netdata v1 installations:** If your agent previously had the v1 dashboard installed (i.e. `$WEB/css/` and `$WEB/fonts/` already exist), you only need to copy `index.html`, `static/`, `dashboard-react.js`, and `dashboard_info.js`. The CSS and font files are unchanged from the original Netdata v1 distribution.
 
 ### 3. Open the dashboard
 
@@ -75,7 +98,7 @@ http://YOUR-AGENT-HOST:19999/v1/
 Or if you have HTTPS configured:
 
 ```
-https://YOUR-AGENT-HOST:19999/v1/
+https://YOUR-AGENT-HOST/v1/
 ```
 
 No restart of the Netdata agent is required — the web server serves files directly from disk.
@@ -153,6 +176,21 @@ This is a React + Redux application. State lives in `src/domains/` organized by 
 Charts are rendered through `src/domains/chart/components/chart-container/` using one of several libraries depending on chart type: **Dygraphs** (time series), **D3**, **EasyPieChart**, **GaugeJS**, or **Peity**.
 
 See `CLAUDE.md` for full architecture details.
+
+### Build output layout
+
+```
+build/
+├── index.html              → $WEB/v1/index.html
+├── dashboard-react.js      → $WEB/dashboard-react.js
+├── dashboard_info.js       → $WEB/dashboard_info.js
+├── css/                    → $WEB/css/
+├── fonts/                  → $WEB/fonts/
+└── static/                 → $WEB/v1/static/
+    ├── js/
+    ├── css/
+    └── media/
+```
 
 ---
 
