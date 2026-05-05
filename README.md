@@ -26,6 +26,8 @@ The following Netdata Cloud features have been removed from the original source:
 
 **Additional improvements:**
 - Systemd unit charts (from the go.d systemd-units plugin) are consolidated into a single "Systemd Units" sidebar category, grouped by unit name, instead of flooding the sidebar with one entry per unit
+- Disk sidebar entries are grouped by device name (e.g. `sda`, `nvme0n1`) rather than by metric family (`io`, `ops`, `latency`, etc.), so all charts for a device appear together
+- Multipath disks are labeled by their alias (`mpatha`, `mpathb`, …) rather than the kernel device-mapper name (`dm-9`, `dm-15`, etc.)
 
 **Build fixes for modern environments:**
 - Added `@netdata/react-filter-box` stub (the original private package was removed from npm)
