@@ -1517,6 +1517,17 @@ function renderChartsAndMenu(data) {
     var charts = data.charts;
     var m, menu_key;
 
+    // Pre-scan: build dm-N → mpath* map so multipath disks use their alias in the sidebar
+    var diskAliases = {};
+    for (var dc in charts) {
+        if (!charts.hasOwnProperty(dc)) continue;
+        var dch = charts[dc];
+        if (dch.type === 'disk_ext' && dch.family && dch.family.indexOf('mpath') === 0) {
+            var ddev = dch.id.slice(dch.type.length + 1);
+            if (ddev) diskAliases[ddev] = dch.family;
+        }
+    }
+
     for (var c in charts) {
         if (!charts.hasOwnProperty(c)) {
             continue;
@@ -1524,6 +1535,9 @@ function renderChartsAndMenu(data) {
 
         var chart = charts[c];
         enrichChartData(chart);
+        if (chart.menu === 'disk' && chart.submenu && diskAliases[chart.submenu]) {
+            chart.submenu = diskAliases[chart.submenu];
+        }
         m = chart.menu;
 
         // create the menu
