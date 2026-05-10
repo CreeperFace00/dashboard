@@ -2,9 +2,9 @@ server {
     listen 80;
     root /usr/share/nginx/html;
 
-    # Redirect root to the dashboard
+    # Redirect root to the dashboard (use $http_host to preserve non-standard ports)
     location = / {
-        return 302 /v1/;
+        return 302 $scheme://$http_host/v1/;
     }
 
     # Serve the React SPA
