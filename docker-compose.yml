@@ -1,0 +1,7 @@
+services:
+  dashboard:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - NETDATA_URL=http://your-netdata-host:19999

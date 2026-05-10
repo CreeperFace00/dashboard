@@ -1,0 +1,23 @@
+server {
+    listen 80;
+    root /usr/share/nginx/html;
+
+    # Redirect root to the dashboard
+    location = / {
+        return 302 /v1/;
+    }
+
+    # Serve the React SPA
+    location /v1/ {
+        try_files $uri $uri/ /v1/index.html;
+    }
+
+    # Proxy all Netdata API calls to the configured agent
+    location /api/ {
+        proxy_pass ${NETDATA_URL};
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_http_version 1.1;
+        proxy_read_timeout 60s;
+    }
+}
