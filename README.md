@@ -39,6 +39,41 @@ The core monitoring dashboard — charts, alarms, the registry, pan/zoom, themin
 
 ---
 
+## Quickstart (Docker)
+
+No build required — pull the pre-built image and point it at your Netdata agent.
+
+### docker run
+
+```bash
+docker run -d \
+  -e NETDATA_URL=http://YOUR-AGENT-HOST:19999 \
+  -p 8080:80 \
+  maxgoodell/netdata-dashboard:latest
+```
+
+Then open `http://localhost:8080/` in your browser.
+
+### docker compose
+
+```yaml
+services:
+  dashboard:
+    image: maxgoodell/netdata-dashboard:latest
+    ports:
+      - "8080:80"
+    environment:
+      - NETDATA_URL=http://YOUR-AGENT-HOST:19999
+```
+
+```bash
+docker compose up -d
+```
+
+`NETDATA_URL` must be reachable from inside the container. Use the host's LAN IP or hostname rather than `localhost` if the agent is running on the Docker host itself.
+
+---
+
 ## Installing on a Netdata Agent
 
 Netdata's built-in web server serves static files from its web root (typically `/usr/share/netdata/web/`). The v1 dashboard lives in the `v1/` subdirectory, while several supporting files are served from the web root itself.
