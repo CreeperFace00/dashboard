@@ -1,8 +1,11 @@
-# Netdata Agent v1 Dashboard (Community Fork)
+# Netdata Dashboard, deshitified
 
-A community-maintained fork of the original Netdata Agent v1 React dashboard, with all Netdata Cloud integration removed. This fork keeps the dashboard fully self-contained and independent of Netdata's cloud services.
+A fork of the abandoned open source Netdata dashboard. All Netdata Cloud "features" and telemetry have been removed and bug fixes to the aging code have been applied.
 
-> **AI Disclaimer:** The initial cloud-removal refactor in this fork was performed with the assistance of Claude (Anthropic), an AI coding assistant. All changes have been reviewed for correctness, but users should audit the code for their own security and compliance requirements.
+This verson has none of the limitations or feature creep of the new closed source Netdata dashboard, and bypasses subscription requirements by interacting with the Netdata agent's API directly. 
+It's completely self contained and can be deployed in minutes using a docker webserver to proxy requests to any agent's API.
+
+> **AI Disclaimer:** I utilized Claude extensively on this project. While I am confident in it's work for use on my own systems, you should audit the code yourself, just like you would any other internet stranger's slop code.
 
 ---
 
