@@ -12,6 +12,13 @@ server {
         try_files $uri $uri/ /v1/index.html;
     }
 
+    # Proxy version.txt so the dashboard's server-detection check passes
+    location = /version.txt {
+        proxy_pass ${NETDATA_URL}/version.txt;
+        proxy_set_header Host $http_host;
+        proxy_http_version 1.1;
+    }
+
     # Proxy all Netdata API calls to the configured agent
     location /api/ {
         proxy_pass ${NETDATA_URL};
