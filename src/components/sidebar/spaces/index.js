@@ -4,6 +4,7 @@ import ExpandButton from "./expandButton"
 
 const Spaces = ({ isOpen, toggle }) => (
   <Flex
+    className="spaces-sidebar"
     column
     justifyContent="between"
     background="panel"

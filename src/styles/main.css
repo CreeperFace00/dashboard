@@ -488,6 +488,26 @@ body.modal-open {
     }
 }
 
+@media (max-width: 767px) {
+    .charts-body {
+        padding-left: 2% !important;
+        padding-right: 2% !important;
+        width: 100% !important;
+    }
+
+    /* Prevent charts from overflowing their container */
+    .netdata-chartblock-container {
+        max-width: 100% !important;
+    }
+
+    /* Ensure the main container uses full width */
+    .container {
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
 @media print {
     body {
         overflow: visible !important;

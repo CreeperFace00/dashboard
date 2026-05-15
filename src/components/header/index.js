@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Flex } from "@netdata/netdata-ui"
+import { Flex, Button } from "@netdata/netdata-ui"
 import Node from "./node"
 import Options from "./options"
 import Version from "./version"
@@ -26,11 +26,22 @@ const Header = () => (
       <Node />
     </Flex>
     <Flex justifyContent="end" alignItems="center" gap={3}>
-      <Version />
-      <Options />
-      <Timezone />
+      <span className="header-desktop-only"><Version /></span>
+      <span className="header-desktop-only"><Options /></span>
+      <span className="header-desktop-only"><Timezone /></span>
       <GlobalControls />
       <Alarms />
+      <span className="header-mobile-only">
+        <Button
+          flavour="borderless"
+          neutral
+          themeType="dark"
+          data-toggle="modal"
+          data-target="#optionsModal"
+          icon="gear"
+          title="Settings"
+        />
+      </span>
     </Flex>
   </Wrapper>
 )

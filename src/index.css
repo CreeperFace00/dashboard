@@ -17,3 +17,28 @@ code {
     padding-left: 372px;
   }
 }
+
+/* Mobile: hide the spaces sidebar and remove its body offset */
+@media (max-width: 767px) {
+  body {
+    padding-left: 0 !important;
+  }
+  .spaces-sidebar {
+    display: none !important;
+  }
+  /* Hide non-critical header items to prevent overflow */
+  .header-desktop-only {
+    display: none !important;
+  }
+}
+
+/* Show mobile-only elements only on mobile */
+.header-mobile-only {
+  display: none;
+}
+@media (max-width: 767px) {
+  .header-mobile-only {
+    display: flex;
+    align-items: center;
+  }
+}
